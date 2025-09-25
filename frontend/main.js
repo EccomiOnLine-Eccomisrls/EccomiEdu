@@ -1,0 +1,29 @@
+const API_BASE = (window.VITE_API_BASE_URL) || "http://localhost:8000";
+
+document.querySelector('#year').textContent = new Date().getFullYear();
+
+const form = document.getElementById('loginForm');
+const errEl = document.getElementById('err');
+
+form.addEventListener('submit', async (e)=>{
+  e.preventDefault();
+  errEl.classList.add('hidden');
+  const data = Object.fromEntries(new FormData(form).entries());
+  try{
+    const r = await fetch(`${API_BASE}/auth/login`, {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ email:data.email, password:data.password })
+    });
+    if(!r.ok){
+      const j = await r.json().catch(()=>({detail:"Errore"}));
+      throw new Error(j.detail || 'Accesso negato');
+    }
+    const j = await r.json();
+    localStorage.setItem('ec_auth', JSON.stringify(j));
+    location.href = '/admin.html';
+  }catch(err){
+    errEl.textContent = err.message || 'Errore di autenticazione';
+    errEl.classList.remove('hidden');
+  }
+});
