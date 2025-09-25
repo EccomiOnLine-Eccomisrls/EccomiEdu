@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Eccomi Edu — Accesso</title>
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+  <div class="login-wrap">
+    <div class="brand">
+      <div class="logo">EC<span>COMI</span> EDU</div>
+      <p class="subtitle">Accedi per iniziare</p>
+    </div>
+
+    <form id="loginForm" class="card">
+      <label>Email</label>
+      <input type="email" name="email" placeholder="admin@eccomi.edu" autocomplete="username" required />
+
+      <label>Password</label>
+      <input type="password" name="password" placeholder="••••••••" autocomplete="current-password" required />
+
+      <button type="submit" class="btn">Entra</button>
+      <p id="err" class="err hidden"></p>
+    </form>
+
+    <footer>© <span id="year"></span> Eccomi Edu • Private Beta</footer>
+  </div>
+
+  <script type="module" src="/main.js"></script>
+</body>
+</html>

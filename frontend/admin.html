@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Eccomi Edu — Admin</title>
+  <link rel="stylesheet" href="/styles.css"/>
+</head>
+<body>
+  <header class="topbar">
+    <div class="logo">EC<span>COMI</span> EDU</div>
+    <nav class="tabs">
+      <button data-tab="dashboard" class="tab active">Dashboard</button>
+      <button data-tab="materials" class="tab">Materiali</button>
+      <button data-tab="shopify" class="tab">Shopify</button>
+      <button data-tab="settings" class="tab">Impostazioni</button>
+    </nav>
+    <div class="spacer"></div>
+    <div id="userBadge" class="badge"></div>
+    <button id="logoutBtn" class="btn secondary">Esci</button>
+  </header>
+
+  <main class="container">
+    <section id="tab-dashboard" class="tabpane show">
+      <h1>Dashboard Admin</h1>
+      <p>Benvenuto! Qui vedrai stats e scorciatoie.</p>
+      <div id="planBadge" class="plan"></div>
+    </section>
+
+    <section id="tab-materials" class="tabpane">
+      <h2>Materiali</h2>
+      <form id="upForm" class="card" style="max-width:560px">
+        <label>Carica file (PDF/DOC/TXT/immagine – MVP)</label>
+        <input type="file" name="file" required />
+        <button class="btn" type="submit">Carica</button>
+        <p id="upMsg" class="muted"></p>
+      </form>
+
+      <div id="lastUpload" class="panel" style="display:none">
+        <h3>Ultimo file</h3>
+        <p id="fileInfo"></p>
+        <button id="summBtn" class="btn">Genera Riassunto (MVP)</button>
+        <pre id="summaryBox" class="pre"></pre>
+      </div>
+    </section>
+
+    <section id="tab-shopify" class="tabpane">
+      <h2>Collegamento Shopify</h2>
+      <p>Placeholder: archivio/pagamenti via Eccomi Online.</p>
+    </section>
+
+    <section id="tab-settings" class="tabpane">
+      <h2>Impostazioni</h2>
+      <p>Gestione utenti e piani (in arrivo).</p>
+    </section>
+  </main>
+
+  <script type="module" src="/admin.js"></script>
+</body>
+</html>
