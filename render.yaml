@@ -21,14 +21,13 @@ services:
       - key: ADMIN_PASSWORD_PLAIN
         value: EccomiAdmin!2025
       - key: EC_STOR_DIR
-        value: ./_storage   # in free useremo solo filesystem volatile
+        value: ./_storage
     healthCheckPath: /health
 
   - type: web
     name: eccomi-edu-frontend
     env: static
     plan: free
-    region: frankfurt
     buildCommand: |
       cd frontend
       npm ci || npm i
