@@ -5,14 +5,12 @@ services:
     plan: free
     region: frankfurt
     buildCommand: |
-      cd backend
       python -m venv .venv
       . .venv/bin/activate
-      pip install -r requirements.txt
+      pip install -r backend/requirements.txt
     startCommand: |
-      cd backend
       . .venv/bin/activate
-      uvicorn main:app --host 0.0.0.0 --port $PORT
+      uvicorn backend.main:app --host 0.0.0.0 --port $PORT
     envVars:
       - key: JWT_SECRET
         generateValue: true
@@ -21,20 +19,5 @@ services:
       - key: ADMIN_PASSWORD_PLAIN
         value: EccomiAdmin!2025
       - key: EC_STOR_DIR
-        value: ./_storage
+        value: ./backend/_storage   # filesystem volatile ok per MVP
     healthCheckPath: /health
-
-  - type: web
-    name: eccomi-edu-frontend
-    env: static
-    plan: free
-    buildCommand: |
-      cd frontend
-      npm ci || npm i
-      echo "VITE_API_BASE_URL=https://eccomi-edu-backend.onrender.com" > .env
-      npm run build
-    staticPublishPath: frontend/dist
-    routes:
-      - type: rewrite
-        source: /admin
-        destination: /admin.html
