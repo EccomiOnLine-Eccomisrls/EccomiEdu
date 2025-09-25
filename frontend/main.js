@@ -1,6 +1,7 @@
-import './styles.css';
+import './styles.css'; // <— importantissimo
 
-const API_BASE = (import.meta.env.VITE_API_BASE_URL) || "http://localhost:8000";
+const API_BASE =
+  (import.meta.env.VITE_API_BASE_URL) || "https://eccomi-edu-backend.onrender.com";
 
 document.querySelector('#year').textContent = new Date().getFullYear();
 
