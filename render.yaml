@@ -21,11 +21,7 @@ services:
       - key: ADMIN_PASSWORD_PLAIN
         value: EccomiAdmin!2025
       - key: EC_STOR_DIR
-        value: /var/data
-    disk:
-      name: data
-      mountPath: /var/data
-      sizeGB: 1
+        value: ./_storage   # in free useremo solo filesystem volatile
     healthCheckPath: /health
 
   - type: web
