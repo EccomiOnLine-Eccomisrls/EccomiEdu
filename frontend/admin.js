@@ -1,5 +1,5 @@
 // Guard semplice lato client
-const API_BASE = (window.VITE_API_BASE_URL) || "http://localhost:8000";
+const API_BASE = (import.meta.env.VITE_API_BASE_URL) || "http://localhost:8000";
 const authRaw = localStorage.getItem('ec_auth');
 if(!authRaw){
   location.href = '/';
