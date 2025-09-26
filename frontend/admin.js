@@ -1,95 +1,104 @@
-import './styles.css';
+/* =========================================================
+ * Eccomi Edu — Admin Panel
+ * Gestione materiali (link / testo / file)
+ * ========================================================= */
 
-const API_BASE =
-  (typeof window !== 'undefined' && window.VITE_API_BASE_URL) ||
-  (import.meta?.env?.VITE_API_BASE_URL) ||
-  "https://eccomi-edu-backend.onrender.com";
+import "./styles.css";
 
-const $ = (s) => document.querySelector(s);
-const log = (m) => { const el = $('#log'); el.textContent += `\n${new Date().toLocaleTimeString()} ${m}`; el.scrollTop = el.scrollHeight; };
+const apiBase = window.VITE_API_BASE_URL || "https://eccomi-edu-backend.onrender.com";
 
-// bootstrap UI con valori salvati
-(function init() {
-  const s = JSON.parse(localStorage.getItem('ec_settings') || '{}');
-  $('#apiBase').value = s.apiBase || API_BASE;
-  $('#userId').value  = s.userId  || 'studente_001';
-})();
+// Elementi DOM
+const form = document.getElementById("materialForm");
+const titoloEl = document.getElementById("titolo");
+const tipoEl = document.getElementById("tipo");
+const urlEl = document.getElementById("url");
+const textEl = document.getElementById("text");
+const fileEl = document.getElementById("file");
+const userIdEl = document.getElementById("userId");
+const logEl = document.getElementById("log");
+const listaEl = document.getElementById("lista");
 
-$('#logout').addEventListener('click', () => {
-  localStorage.removeItem('ec_auth');
-  location.href = '/index.html';
+function log(msg) {
+  logEl.textContent += `\n${new Date().toLocaleTimeString()} ${msg}`;
+  logEl.scrollTop = logEl.scrollHeight;
+}
+
+// Salvataggio impostazioni
+document.getElementById("saveBtn").addEventListener("click", () => {
+  localStorage.setItem("ec_api_base", apiBase);
+  localStorage.setItem("ec_user_id", userIdEl.value);
+  log("Impostazioni salvate.");
 });
 
-$('#save').addEventListener('click', () => {
-  const apiBase = $('#apiBase').value.trim();
-  const userId  = $('#userId').value.trim();
-  localStorage.setItem('ec_settings', JSON.stringify({ apiBase, userId }));
-  log('Impostazioni salvate.');
-});
+// Caricamento materiali
+form.addEventListener("submit", async (e) => {
+  e.preventDefault();
 
-// POST materiale
-$('#add').addEventListener('click', async () => {
-  const { apiBase, userId } = JSON.parse(localStorage.getItem('ec_settings') || '{}');
-  if (!apiBase || !userId) return log('Config mancante.');
-
-  const title = $('#title').value.trim();
-  const tipo  = $('#tipo').value;
-  const text  = $('#text').value.trim();
-  const url   = $('#url').value.trim();
-  const file  = $('#file').files[0];
+  const title = titoloEl.value.trim();
+  const tipo = tipoEl.value;
+  const url = urlEl.value.trim();
+  const text = textEl.value.trim();
+  const file = fileEl.files[0];
+  const userId = userIdEl.value || "studente_001";
 
   try {
     let res;
-    if (tipo === 'file') {
-      if (!file) return log('Seleziona un file.');
+    if (tipo === "file" && file) {
       const fd = new FormData();
-      fd.append('user_id', userId);
-      fd.append('title', title || file.name);
-      fd.append('category', '');
-      fd.append('file', file);
-      res = await fetch(`${apiBase}/upload/material`, { method: 'POST', body: fd });
+      fd.append("file", file);
+      fd.append("user_id", userId);
+      fd.append("title", title || file.name);
+      res = await fetch(`${apiBase}/materials/upload`, { method: "POST", body: fd });
     } else {
-      // mappo sui nomi attesi dal backend
+      // ✅ Schema corretto per il backend
       const payload = {
         user_id: userId,
-        title: title || (tipo === 'link' ? url : (text.slice(0,40) || 'Senza titolo')),
-        type: tipo,              // "link" | "text"
-        src_url: tipo === 'link' ? url : null,
-        text:    tipo === 'text' ? text : null
+        title: title || (tipo === "link" ? url : (text.slice(0, 40) || "Senza titolo")),
+        content: tipo === "link" ? url : text
       };
       res = await fetch(`${apiBase}/materials`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload)
       });
     }
 
-    const bodyText = await res.text();
-    if (!res.ok) throw new Error(`POST ${res.status}: ${bodyText}`);
-    log('Materiale aggiunto.');
-  } catch (e) {
-    log(`Errore caricamento → ${e.message}`);
+    if (!res.ok) {
+      const j = await res.json().catch(() => ({}));
+      throw new Error(`Errore caricamento: ${res.status} ${JSON.stringify(j)}`);
+    }
+    log("Materiale aggiunto.");
+    await caricaMateriali();
+  } catch (err) {
+    log(err.message);
   }
 });
 
-// GET lista materiali
-$('#reload').addEventListener('click', async () => {
-  const { apiBase, userId } = JSON.parse(localStorage.getItem('ec_settings') || '{}');
-  if (!apiBase || !userId) return log('Config mancante.');
-
+// Lista materiali
+async function caricaMateriali() {
+  listaEl.innerHTML = "";
   try {
-    const res = await fetch(`${apiBase}/materials?user_id=${encodeURIComponent(userId)}`);
-    const text = await res.text();
-    if (!res.ok) throw new Error(`GET ${res.status}: ${text}`);
-
-    const items = JSON.parse(text);
-    const list = $('#materials');
-    list.innerHTML = items.length
-      ? items.map(m => `<li><strong>${m.title}</strong> <em>(${m.type})</em></li>`).join('')
-      : '<li>Nessun materiale caricato.</li>';
-
-    log('Lista aggiornata.');
-  } catch (e) {
-    log(`Errore lista → ${e.message}`);
+    const res = await fetch(`${apiBase}/materials?user_id=${userIdEl.value || "studente_001"}`);
+    if (!res.ok) throw new Error("Errore caricamento lista");
+    const j = await res.json();
+    if (!j.length) {
+      listaEl.innerHTML = "<p>Nessun materiale caricato.</p>";
+      return;
+    }
+    j.forEach((m) => {
+      const div = document.createElement("div");
+      div.className = "item";
+      div.innerHTML = `<b>${m.title}</b><br/><small>${m.content || ""}</small>`;
+      listaEl.appendChild(div);
+    });
+  } catch (err) {
+    log(err.message);
   }
-});
+}
+
+// Bottone ricarica
+document.getElementById("reloadBtn").addEventListener("click", caricaMateriali);
+
+// Init
+userIdEl.value = localStorage.getItem("ec_user_id") || "studente_001";
+log("Pronto.");
