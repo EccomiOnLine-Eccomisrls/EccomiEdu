@@ -2,85 +2,85 @@
 <html lang="it">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Eccomi Edu — Admin</title>
-  <link rel="stylesheet" href="./styles.css">
+  <link rel="stylesheet" href="./styles.css" />
 </head>
 <body>
-  <div class="admin-wrap">
-    <div class="header">
-      <h1>ECCOMI EDU <small>Eccomi Admin — admin</small></h1>
-      <button id="logout" class="btn ghost">Esci</button>
-    </div>
+  <div class="app">
+    <header>
+      <h1>ECCOMI EDU</h1>
+      <p>Eccomi Admin — admin</p>
+      <button id="logoutBtn" class="btn secondary">Esci</button>
+    </header>
 
+    <!-- Impostazioni -->
     <section class="card">
       <h2>Impostazioni</h2>
-      <label>API Base URL
-        <input type="text" id="apiBase" class="api-base-input" placeholder="https://eccomi-edu-backend.onrender.com"/>
-      </label>
-      <label>User ID
-        <input type="text" id="userId" value="studente_001"/>
-      </label>
-      <button id="save" class="btn primary">Salva</button>
-      <p class="hint">Consiglio: usa un user_id per ogni studente.</p>
+      <label for="apiBase">API Base URL</label>
+      <input id="apiBase" placeholder="https://eccomi-edu-backend.onrender.com" />
+
+      <label for="userId">User ID</label>
+      <input id="userId" placeholder="studente_001" />
+
+      <button id="saveSettings" class="btn">Salva</button>
+      <small>Consiglio: usa un user_id per ogni studente.</small>
     </section>
 
+    <!-- Carica materiale -->
     <section class="card">
       <h2>Carica materiale <small>Link / Testo / File</small></h2>
 
-      <label>Titolo
-        <input type="text" id="title" placeholder="Titolo del materiale"/>
-      </label>
+      <label for="titolo">Titolo</label>
+      <input id="titolo" placeholder="Titolo del materiale" />
 
-      <label>Tipo
-        <select id="tipo">
-          <option value="link">Link</option>
-          <option value="text">Testo</option>
-          <option value="file">File</option>
-        </select>
-      </label>
+      <label for="tipo">Tipo</label>
+      <select id="tipo">
+        <option value="Link">Link</option>
+        <option value="Testo">Testo</option>
+        <option value="File">File</option>
+      </select>
 
-      <label>Testo (se “Testo”)
-        <textarea id="text" placeholder="Incolla testo qui"></textarea>
-      </label>
-
-      <label>URL (se “Link”)
-        <input type="url" id="url" placeholder="https://..."/>
-      </label>
-
-      <label>File (se “File”)
-        <input type="file" id="file" />
-      </label>
-
-      <button id="add" class="btn primary wide">Aggiungi</button>
-      <p class="hint">Formati consentiti: PDF, DOCX, JPG/PNG/WEBP</p>
-    </section>
-
-    <section class="card">
-      <div class="card-head">
-        <h2>I miei materiali</h2>
-        <button id="reload" class="btn">Ricarica</button>
+      <div id="ifLink">
+        <label for="url">URL (se Link)</label>
+        <input id="url" placeholder="https://..." />
       </div>
-      <ul id="materials" class="list"></ul>
-    </section>
 
-    <section class="card">
-      <div class="card-head">
-        <h2>Ripasso di oggi</h2>
-        <button id="review" class="btn">Mostra</button>
+      <div id="ifTesto">
+        <label for="text">Testo (se “Testo”)</label>
+        <textarea id="text" rows="6" placeholder="Incolla testo qui..."></textarea>
       </div>
-      <div id="reviewCards"></div>
+
+      <div id="ifFile">
+        <label for="file">File (se “File”)</label>
+        <input id="file" type="file" />
+      </div>
+
+      <button id="addBtn" class="btn">Aggiungi</button>
+      <small>Formati consentiti file: PDF, DOCX, JPG/PNG/WEBP</small>
     </section>
 
+    <!-- I miei materiali -->
+    <section class="card">
+      <h2>I miei materiali</h2>
+      <button id="reloadBtn" class="btn">Ricarica</button>
+      <div id="materials"></div>
+    </section>
+
+    <!-- Ripasso -->
+    <section class="card">
+      <h2>Ripasso di oggi</h2>
+      <button id="quizBtn" class="btn">Mostra</button>
+      <div id="quiz"></div>
+    </section>
+
+    <!-- Log -->
     <section class="card">
       <h2>Log</h2>
       <pre id="log">Pronto.</pre>
     </section>
   </div>
 
-  <script>
-    window.VITE_API_BASE_URL = "https://eccomi-edu-backend.onrender.com";
-  </script>
   <script type="module" src="./admin.js"></script>
 </body>
 </html>
