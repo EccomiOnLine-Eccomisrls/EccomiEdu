@@ -1,55 +1,79 @@
-/* ===== Impostazioni Card Responsive ===== */
-.settings-card {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  padding: 16px;
+/* Eccomi Edu — styles.css */
+:root {
+  --primary: #2563eb;
+  --bg: #f9fafb;
+  --text: #111827;
+  --card-bg: #ffffff;
+  --border: #e5e7eb;
 }
 
-.settings-card label {
-  font-size: 14px;
-  font-weight: 600;
-  margin-bottom: 4px;
+body {
+  font-family: system-ui, sans-serif;
+  background: var(--bg);
+  margin: 0;
+  color: var(--text);
 }
 
-/* Input fields full width */
-.settings-card input[type="text"],
-.settings-card input[type="url"] {
+.login-wrap, .admin-wrap {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.logo {
+  font-weight: bold;
+  font-size: 1.8rem;
+  color: var(--primary);
+}
+.logo span { color: #000; }
+
+.card {
+  background: var(--card-bg);
+  padding: 1rem;
+  margin: 1rem 0;
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+}
+
+input, select, textarea, button {
+  display: block;
   width: 100%;
-  font-size: 14px;
-  padding: 8px 10px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  box-sizing: border-box;
-  overflow-x: auto;
-  white-space: nowrap;
+  margin: 0.5rem 0;
+  padding: 0.6rem;
+  font-size: 1rem;
+  border: 1px solid var(--border);
+  border-radius: 0.4rem;
 }
 
-/* Migliore leggibilità su mobile */
-@media (max-width: 768px) {
-  .settings-card {
-    padding: 12px;
-    gap: 10px;
-  }
-
-  .settings-card input[type="text"],
-  .settings-card input[type="url"] {
-    font-size: 12px;
-  }
+textarea {
+  min-height: 100px;
 }
 
-/* Pulsante */
-.settings-card button {
-  width: 100%;
-  padding: 10px;
-  font-size: 15px;
-  background-color: #007bff;
-  color: #fff;
+.btn {
+  background: var(--primary);
+  color: white;
   border: none;
-  border-radius: 6px;
   cursor: pointer;
 }
+.btn:hover {
+  background: #1d4ed8;
+}
 
-.settings-card button:hover {
-  background-color: #0056b3;
+.btn.small {
+  width: auto;
+  padding: 0.4rem 0.8rem;
+  font-size: 0.9rem;
+}
+
+.err {
+  color: red;
+  margin-top: 0.5rem;
+}
+.hidden { display: none; }
+
+.api-base-input {
+  font-family: monospace;
+  font-size: 0.9rem;
+  white-space: nowrap;
+  overflow-x: auto;
 }
