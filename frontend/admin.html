@@ -1,60 +1,87 @@
 <!doctype html>
 <html lang="it">
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-  <title>Eccomi Edu — Admin</title>
-  <link rel="stylesheet" href="/styles.css"/>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Eccomi Edu — Dashboard</title>
+  <link rel="stylesheet" href="/styles.css" />
 </head>
 <body>
   <header class="topbar">
-    <div class="logo">EC<span>COMI</span> EDU</div>
-    <nav class="tabs">
-      <button data-tab="dashboard" class="tab active">Dashboard</button>
-      <button data-tab="materials" class="tab">Materiali</button>
-      <button data-tab="shopify" class="tab">Shopify</button>
-      <button data-tab="settings" class="tab">Impostazioni</button>
-    </nav>
-    <div class="spacer"></div>
-    <div id="userBadge" class="badge"></div>
-    <button id="logoutBtn" class="btn secondary">Esci</button>
+    <div class="left">
+      <div class="logo small">EC<span>COMI</span> EDU</div>
+      <span id="userInfo" class="muted"></span>
+    </div>
+    <div class="right">
+      <button id="btnLogout" class="btn ghost">Esci</button>
+    </div>
   </header>
 
   <main class="container">
-    <section id="tab-dashboard" class="tabpane show">
-      <h1>Dashboard Admin</h1>
-      <p>Benvenuto! Qui vedrai stats e scorciatoie.</p>
-      <div id="planBadge" class="plan"></div>
-    </section>
-
-    <section id="tab-materials" class="tabpane">
-      <h2>Materiali</h2>
-      <form id="upForm" class="card" style="max-width:560px">
-        <label>Carica file (PDF/DOC/TXT/immagine – MVP)</label>
-        <input type="file" name="file" required />
-        <button class="btn" type="submit">Carica</button>
-        <p id="upMsg" class="muted"></p>
-      </form>
-
-      <div id="lastUpload" class="panel" style="display:none">
-        <h3>Ultimo file</h3>
-        <p id="fileInfo"></p>
-        <button id="summBtn" class="btn">Genera Riassunto (MVP)</button>
-        <pre id="summaryBox" class="pre"></pre>
+    <section class="card">
+      <h2>Impostazioni</h2>
+      <div class="grid two">
+        <div>
+          <label>API Base URL</label>
+          <input id="apiBase" placeholder="https://eccomi-edu-backend.onrender.com" />
+        </div>
+        <div>
+          <label>User ID</label>
+          <input id="userId" placeholder="es. studente_001" />
+        </div>
+      </div>
+      <div class="inline">
+        <button id="btnSaveCfg" class="btn">Salva</button>
+        <span class="muted">Consiglio: usa un user_id per ogni studente.</span>
       </div>
     </section>
 
-    <section id="tab-shopify" class="tabpane">
-      <h2>Collegamento Shopify</h2>
-      <p>Placeholder: archivio/pagamenti via Eccomi Online.</p>
-    </section>
+    <section class="grid two">
+      <div class="card">
+        <h3>Carica materiale <span class="pill">Link / Testo / File</span></h3>
+        <label>Titolo</label>
+        <input id="matTitle" placeholder="Titolo del materiale" />
+        <div class="grid two">
+          <div>
+            <label>Tipo</label>
+            <select id="matType">
+              <option value="link">Link</option>
+              <option value="text">Testo</option>
+            </select>
+          </div>
+          <div class="inline">
+            <label class="muted"><input type="checkbox" id="useUpload"> Usa upload file</label>
+          </div>
+        </div>
+        <input id="matUrl" placeholder="URL (se Link)" />
+        <textarea id="matText" placeholder="Incolla testo (se Testo)"></textarea>
+        <input type="file" id="matFile" accept=".pdf,.docx,image/*" />
+        <button id="btnAdd" class="btn">Aggiungi</button>
+        <p class="muted">Formati consentiti file: PDF, DOCX, JPG/PNG/WEBP</p>
+      </div>
 
-    <section id="tab-settings" class="tabpane">
-      <h2>Impostazioni</h2>
-      <p>Gestione utenti e piani (in arrivo).</p>
+      <div class="card">
+        <h3>I miei materiali</h3>
+        <div class="inline">
+          <button id="btnReload" class="btn">Ricarica</button>
+          <button id="btnShowArtifacts" class="btn ghost">I miei artifact</button>
+        </div>
+        <div id="materialsList" class="list muted">Nessun materiale caricato.</div>
+      </div>
+
+      <div class="card">
+        <h3>Ripasso di oggi</h3>
+        <button id="btnDue" class="btn">Mostra</button>
+        <div id="dueList" class="list muted">Nessuna card dovuta al momento.</div>
+      </div>
+
+      <div class="card">
+        <h3>Log</h3>
+        <pre id="log" class="log">Pronto.</pre>
+      </div>
     </section>
   </main>
 
-  <script type="module" src="/admin.js"></script>
+  <script src="/admin.js" type="module"></script>
 </body>
 </html>
