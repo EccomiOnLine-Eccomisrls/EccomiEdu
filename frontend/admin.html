@@ -3,85 +3,61 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Eccomi Edu — Dashboard</title>
-  <link rel="stylesheet" href="/styles.css" />
+  <title>Eccomi Edu — Admin</title>
 </head>
 <body>
-  <header class="topbar">
-    <div class="left">
-      <div class="logo small">EC<span>COMI</span> EDU</div>
-      <span id="userInfo" class="muted"></span>
-    </div>
-    <div class="right">
-      <button id="btnLogout" class="btn ghost">Esci</button>
-    </div>
-  </header>
+  <div class="admin-wrap">
+    <h1>EC<span>COMI</span> EDU<br><small>Eccomi Admin — admin</small></h1>
+    <button id="logout" class="btn small">Esci</button>
 
-  <main class="container">
     <section class="card">
       <h2>Impostazioni</h2>
-      <div class="grid two">
-        <div>
-          <label>API Base URL</label>
-          <input id="apiBase" placeholder="https://eccomi-edu-backend.onrender.com" />
-        </div>
-        <div>
-          <label>User ID</label>
-          <input id="userId" placeholder="es. studente_001" />
-        </div>
-      </div>
-      <div class="inline">
-        <button id="btnSaveCfg" class="btn">Salva</button>
-        <span class="muted">Consiglio: usa un user_id per ogni studente.</span>
-      </div>
+      <label>API Base URL
+        <input type="text" id="apiBase" value="" class="api-base-input"/>
+      </label>
+      <label>User ID
+        <input type="text" id="userId" value="studente_001"/>
+      </label>
+      <button id="save" class="btn">Salva</button>
+      <p class="hint">Consiglio: usa un user_id per ogni studente.</p>
     </section>
 
-    <section class="grid two">
-      <div class="card">
-        <h3>Carica materiale <span class="pill">Link / Testo / File</span></h3>
-        <label>Titolo</label>
-        <input id="matTitle" placeholder="Titolo del materiale" />
-        <div class="grid two">
-          <div>
-            <label>Tipo</label>
-            <select id="matType">
-              <option value="link">Link</option>
-              <option value="text">Testo</option>
-            </select>
-          </div>
-          <div class="inline">
-            <label class="muted"><input type="checkbox" id="useUpload"> Usa upload file</label>
-          </div>
-        </div>
-        <input id="matUrl" placeholder="URL (se Link)" />
-        <textarea id="matText" placeholder="Incolla testo (se Testo)"></textarea>
-        <input type="file" id="matFile" accept=".pdf,.docx,image/*" />
-        <button id="btnAdd" class="btn">Aggiungi</button>
-        <p class="muted">Formati consentiti file: PDF, DOCX, JPG/PNG/WEBP</p>
-      </div>
+    <section class="card">
+      <h2>Carica materiale <small>Link / Testo / File</small></h2>
+      <input type="text" id="title" placeholder="Titolo del materiale"/>
 
-      <div class="card">
-        <h3>I miei materiali</h3>
-        <div class="inline">
-          <button id="btnReload" class="btn">Ricarica</button>
-          <button id="btnShowArtifacts" class="btn ghost">I miei artifact</button>
-        </div>
-        <div id="materialsList" class="list muted">Nessun materiale caricato.</div>
-      </div>
+      <select id="tipo">
+        <option value="link">Link</option>
+        <option value="text">Testo</option>
+        <option value="file">File</option>
+      </select>
 
-      <div class="card">
-        <h3>Ripasso di oggi</h3>
-        <button id="btnDue" class="btn">Mostra</button>
-        <div id="dueList" class="list muted">Nessuna card dovuta al momento.</div>
-      </div>
+      <textarea id="text" placeholder="Incolla testo (se Testo)"></textarea>
+      <input type="url" id="url" placeholder="URL (se Link)" />
+      <input type="file" id="file" />
 
-      <div class="card">
-        <h3>Log</h3>
-        <pre id="log" class="log">Pronto.</pre>
-      </div>
+      <button id="add" class="btn">Aggiungi</button>
+      <p class="hint">Formati consentiti: PDF, DOCX, JPG/PNG/WEBP</p>
     </section>
-  </main>
 
-  <script src="/admin.js" type="module"></script>
+    <section class="card">
+      <h2>I miei materiali</h2>
+      <button id="reload" class="btn">Ricarica</button>
+      <ul id="materials"></ul>
+    </section>
+
+    <section class="card">
+      <h2>Ripasso di oggi</h2>
+      <button id="review" class="btn">Mostra</button>
+      <div id="reviewCards"></div>
+    </section>
+
+    <section class="card">
+      <h2>Log</h2>
+      <pre id="log">Pronto.</pre>
+    </section>
+  </div>
+
+  <script type="module" src="./admin.js"></script>
 </body>
 </html>
