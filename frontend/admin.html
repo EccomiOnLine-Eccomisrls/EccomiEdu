@@ -2,53 +2,73 @@
 <html lang="it">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <title>Eccomi Edu — Admin</title>
+  <link rel="stylesheet" href="./styles.css">
 </head>
 <body>
   <div class="admin-wrap">
-    <h1>EC<span>COMI</span> EDU<br><small>Eccomi Admin — admin</small></h1>
-    <button id="logout" class="btn small">Esci</button>
+    <div class="header">
+      <h1>ECCOMI EDU <small>Eccomi Admin — admin</small></h1>
+      <button id="logout" class="btn ghost">Esci</button>
+    </div>
 
     <section class="card">
       <h2>Impostazioni</h2>
       <label>API Base URL
-        <input type="text" id="apiBase" value="" class="api-base-input"/>
+        <input type="text" id="apiBase" class="api-base-input" placeholder="https://eccomi-edu-backend.onrender.com"/>
       </label>
       <label>User ID
         <input type="text" id="userId" value="studente_001"/>
       </label>
-      <button id="save" class="btn">Salva</button>
+      <button id="save" class="btn primary">Salva</button>
       <p class="hint">Consiglio: usa un user_id per ogni studente.</p>
     </section>
 
     <section class="card">
       <h2>Carica materiale <small>Link / Testo / File</small></h2>
-      <input type="text" id="title" placeholder="Titolo del materiale"/>
 
-      <select id="tipo">
-        <option value="link">Link</option>
-        <option value="text">Testo</option>
-        <option value="file">File</option>
-      </select>
+      <label>Titolo
+        <input type="text" id="title" placeholder="Titolo del materiale"/>
+      </label>
 
-      <textarea id="text" placeholder="Incolla testo (se Testo)"></textarea>
-      <input type="url" id="url" placeholder="URL (se Link)" />
-      <input type="file" id="file" />
+      <label>Tipo
+        <select id="tipo">
+          <option value="link">Link</option>
+          <option value="text">Testo</option>
+          <option value="file">File</option>
+        </select>
+      </label>
 
-      <button id="add" class="btn">Aggiungi</button>
+      <label>Testo (se “Testo”)
+        <textarea id="text" placeholder="Incolla testo qui"></textarea>
+      </label>
+
+      <label>URL (se “Link”)
+        <input type="url" id="url" placeholder="https://..."/>
+      </label>
+
+      <label>File (se “File”)
+        <input type="file" id="file" />
+      </label>
+
+      <button id="add" class="btn primary wide">Aggiungi</button>
       <p class="hint">Formati consentiti: PDF, DOCX, JPG/PNG/WEBP</p>
     </section>
 
     <section class="card">
-      <h2>I miei materiali</h2>
-      <button id="reload" class="btn">Ricarica</button>
-      <ul id="materials"></ul>
+      <div class="card-head">
+        <h2>I miei materiali</h2>
+        <button id="reload" class="btn">Ricarica</button>
+      </div>
+      <ul id="materials" class="list"></ul>
     </section>
 
     <section class="card">
-      <h2>Ripasso di oggi</h2>
-      <button id="review" class="btn">Mostra</button>
+      <div class="card-head">
+        <h2>Ripasso di oggi</h2>
+        <button id="review" class="btn">Mostra</button>
+      </div>
       <div id="reviewCards"></div>
     </section>
 
@@ -58,6 +78,9 @@
     </section>
   </div>
 
+  <script>
+    window.VITE_API_BASE_URL = "https://eccomi-edu-backend.onrender.com";
+  </script>
   <script type="module" src="./admin.js"></script>
 </body>
 </html>
