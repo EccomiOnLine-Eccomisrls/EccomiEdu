@@ -1,7 +1,7 @@
-import './styles.css'; // <— importantissimo
+import './styles.css'; // se usi Vite; in HTML puro viene ignorato
 
 const API_BASE =
-  (import.meta.env.VITE_API_BASE_URL) || "https://eccomi-edu-backend.onrender.com";
+  (window.VITE_API_BASE_URL) || "https://eccomi-edu-backend.onrender.com";
 
 document.querySelector('#year').textContent = new Date().getFullYear();
 
@@ -24,6 +24,7 @@ form.addEventListener('submit', async (e)=>{
     }
     const j = await r.json();
     localStorage.setItem('ec_auth', JSON.stringify(j));
+    localStorage.setItem('ec_api', API_BASE);
     location.href = '/admin.html';
   }catch(err){
     errEl.textContent = err.message || 'Errore di autenticazione';
