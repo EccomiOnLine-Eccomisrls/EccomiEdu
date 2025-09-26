@@ -1,4 +1,3 @@
-# backend/app/main.py
 from fastapi import FastAPI, HTTPException, Depends
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -10,16 +9,15 @@ from .routers import materials, ai_tools, repetition, upload
 app = FastAPI(title="Eccomi Edu API", version="0.1")
 settings = get_settings()
 
-# CORS aperto per MVP (chiudi in prod)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=["*"],      # stringi in prod
     allow_methods=["*"],
     allow_headers=["*"],
     allow_credentials=False,
 )
 
-# ---- AUTH minima per login ----
+# ---- AUTH seed admin (MVP) ----
 ADMIN = {
     "email": settings.ADMIN_EMAIL,
     "password_hash": hash_password(settings.ADMIN_PASSWORD_PLAIN),
@@ -56,4 +54,4 @@ app.include_router(upload.router)
 
 @app.get("/health")
 def health():
-    return {"ok": True}
+    return {"ok": True, "marker": "v2"}
