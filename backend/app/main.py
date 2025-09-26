@@ -35,19 +35,23 @@ class LoginOut(BaseModel):
     user: User
 
 # -----------------------------
-# AUTH inline (no auth.py)
+# AUTH inline (NO bcrypt)
 # -----------------------------
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+from passlib.context import CryptContext
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
+from jose import jwt, JWTError
+
+pwd_context = CryptContext(schemes=["pbkdf2_sha256"], deprecated="auto")  # <-- cambio qui
 security = HTTPBearer()
 
 def hash_password(password: str) -> str:
     return pwd_context.hash(password)
 
 def verify_password(password: str, password_hash: str) -> bool:
-    # Se ADMIN_PASSWORD_PLAIN cambia ad ogni boot, ricalcoliamo l'hash:
     return pwd_context.verify(password, password_hash)
 
 def create_access_token(*, data: dict, secret: str, algo: str, expires_minutes: int = 120) -> str:
+    from datetime import datetime, timedelta
     to_encode = data.copy()
     to_encode["exp"] = datetime.utcnow() + timedelta(minutes=expires_minutes)
     return jwt.encode(to_encode, secret, algorithm=algo)
