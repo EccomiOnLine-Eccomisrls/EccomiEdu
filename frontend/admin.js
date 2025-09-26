@@ -1,137 +1,158 @@
 /* =========================================================
- * Eccomi Edu — Admin Panel (coerente con admin.html)
+ * Eccomi Edu — Admin (caricamento materiali)
  * ========================================================= */
-import "./styles.css";
 
-// ---------- Helpers ----------
-const d = (id) => document.getElementById(id);
-const logEl = d("log");
-function log(msg) {
-  logEl.textContent += `\n${new Date().toLocaleTimeString()} ${msg}`;
+const $ = (s) => document.querySelector(s);
+
+// ---- RIFERIMENTI UI
+const apiBaseEl = $('#apiBase');
+const userIdEl  = $('#userId');
+const btnSave   = $('#btnSave');
+
+const titleEl   = $('#title');
+const typeEl    = $('#type');       // values: "link" | "text"
+const urlEl     = $('#url');        // usato se type === "link"
+const textEl    = $('#text');       // usato se type === "text"
+const fileEl    = $('#file');       // se scegli un file, usiamo l'endpoint /upload/material
+
+const btnAdd    = $('#btnAdd');
+
+const btnReload = $('#btnReload');
+const listEl    = $('#materialsList');
+
+const btnDue    = $('#btnDue');
+const dueEl     = $('#dueList');
+
+const logEl     = $('#log');
+
+// ---- UTILS
+const log = (msg) => {
+  const t = new Date().toTimeString().slice(0,8);
+  logEl.textContent += `\n${t} ${msg}`;
   logEl.scrollTop = logEl.scrollHeight;
-}
-function getApiBase() {
-  return (d("apiBase").value || "").trim() || "https://eccomi-edu-backend.onrender.com";
-}
-function getUserId() {
-  return (d("userId").value || "").trim() || "studente_001";
-}
+};
 
-// ---------- Init impostazioni ----------
-(function initSettings() {
-  d("apiBase").value = localStorage.getItem("ec_api_base") || "https://eccomi-edu-backend.onrender.com";
-  d("userId").value  = localStorage.getItem("ec_user_id")  || "studente_001";
-  log("Impostazioni caricate.");
+const readAPI = () => (apiBaseEl.value || '').trim().replace(/\/+$/,'');
+const readUID = () => (userIdEl.value || '').trim();
+
+const GET = async (path) => {
+  const r = await fetch(`${readAPI()}${path}`);
+  if (!r.ok) throw new Error(`${r.status} ${await r.text()}`);
+  return r.json();
+};
+const POST = async (path, body) => {
+  const r = await fetch(`${readAPI()}${path}`, {
+    method: 'POST',
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify(body)
+  });
+  if (!r.ok) throw new Error(await r.text());
+  return r.json();
+};
+
+// ---- INIT: valori salvati localmente (opzionale)
+(() => {
+  // default consigliato
+  if (!apiBaseEl.value) apiBaseEl.value = 'https://eccomi-edu-backend.onrender.com';
+  log('Pronto.');
 })();
 
-d("saveBtn").addEventListener("click", () => {
-  localStorage.setItem("ec_api_base", getApiBase());
-  localStorage.setItem("ec_user_id", getUserId());
-  log("Impostazioni salvate.");
+// ---- Salva impostazioni
+btnSave?.addEventListener('click', () => {
+  // (le impostazioni sono lette direttamente dai campi; non serve salvare altrove)
+  log('Impostazioni salvate.');
 });
 
-// ---------- UI show/hide campi in base al tipo ----------
-const tipoEl = d("tipo");
-const boxLink = d("ifLink");
-const boxText = d("ifText");
-const boxFile = d("ifFile");
-
-function refreshType() {
-  const t = tipoEl.value;
-  boxLink.style.display = t === "link" ? "block" : "none";
-  boxText.style.display = t === "text" ? "block" : "none";
-  boxFile.style.display = t === "file" ? "block" : "none";
-}
-tipoEl.addEventListener("change", refreshType);
-refreshType();
-
-// ---------- Submit materiale ----------
-d("materialForm").addEventListener("submit", async (e) => {
-  e.preventDefault();
-
-  const apiBase = getApiBase();
-  const userId  = getUserId();
-
-  const title = (d("titolo").value || "").trim();
-  const tipo  = tipoEl.value;               // 'link' | 'text' | 'file'
-  const url   = (d("url").value || "").trim();
-  const text  = (d("text").value || "").trim();
-  const file  = d("file").files[0];
-
+// ---- Aggiungi materiale
+btnAdd?.addEventListener('click', async () => {
   try {
-    let res;
+    const api = readAPI();
+    const uid = readUID();
+    const title = (titleEl.value || '').trim();
+    const selType = typeEl.value;           // "link" | "text"
+    const link = (urlEl.value || '').trim();
+    const plain = (textEl.value || '').trim();
+    const hasFile = fileEl.files && fileEl.files.length > 0;
 
-    if (tipo === "file" && file) {
-      // ✅ endpoint upload file (router: /upload/material)
+    if (!api) throw new Error('API Base URL mancante.');
+    if (!uid) throw new Error('User ID mancante.');
+    if (!title) throw new Error('Titolo mancante.');
+
+    // 1) Se c'è un file selezionato, usiamo /upload/material
+    if (hasFile) {
       const fd = new FormData();
-      fd.append("user_id", userId);
-      fd.append("title", title || file.name);
-      fd.append("file", file);
-
-      res = await fetch(`${apiBase}/upload/material`, { method: "POST", body: fd });
-    } else {
-      // ✅ endpoint JSON (schema: user_id, title, content)
-      const payload = {
-        user_id: userId,
-        title: title || (tipo === "link" ? url : (text.slice(0, 40) || "Senza titolo")),
-        content: tipo === "link" ? url : text
-      };
-      res = await fetch(`${apiBase}/materials`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload)
-      });
-    }
-
-    if (!res.ok) {
-      const j = await res.json().catch(() => ({}));
-      throw new Error(`Errore caricamento → ${res.status} ${JSON.stringify(j)}`);
-    }
-
-    log("Materiale aggiunto.");
-    await caricaMateriali();
-  } catch (err) {
-    log(err.message || "Errore");
-  }
-});
-
-// ---------- Lista materiali ----------
-async function caricaMateriali() {
-  const apiBase = getApiBase();
-  const userId  = getUserId();
-  const listEl  = d("materials");
-
-  listEl.innerHTML = "";
-  try {
-    const r = await fetch(`${apiBase}/materials?user_id=${encodeURIComponent(userId)}`);
-    if (!r.ok) throw new Error("Errore caricamento lista");
-    const items = await r.json();
-
-    if (!items || !items.length) {
-      listEl.innerHTML = `<p>Nessun materiale caricato.</p>`;
+      fd.append('user_id', uid);
+      fd.append('title', title);
+      fd.append('file', fileEl.files[0]);
+      const r = await fetch(`${api}/upload/material`, { method: 'POST', body: fd });
+      if (!r.ok) throw new Error(await r.text());
+      await r.json();
+      log('File caricato.');
+      fileEl.value = '';
       return;
     }
 
-    items.forEach((m) => {
-      const div = document.createElement("div");
-      div.className = "item";
-      const small = (m.content || m.src_url || "").toString().slice(0, 120);
-      div.innerHTML = `<b>${m.title || "(senza titolo)"}</b><br/><small>${small}</small>`;
-      listEl.appendChild(div);
-    });
+    // 2) Altrimenti usiamo /materials (link o testo)
+    if (selType === 'link') {
+      if (!link) throw new Error('URL mancante.');
+      await POST('/materials', {
+        user_id: uid,
+        title,
+        type: 'link',
+        src_url: link             // <— NOME CORRETTO
+      });
+      log('Materiale (link) aggiunto.');
+      urlEl.value = '';
+    } else {
+      if (!plain) throw new Error('Testo mancante.');
+      await POST('/materials', {
+        user_id: uid,
+        title,
+        type: 'text',
+        plain_text: plain         // <— NOME CORRETTO (prima era "text")
+      });
+      log('Materiale (testo) aggiunto.');
+      textEl.value = '';
+    }
   } catch (err) {
-    log(err.message);
+    log(`Errore caricamento → ${err.message || err}`);
+    alert(err.message || err);
   }
-}
-
-d("reloadBtn").addEventListener("click", caricaMateriali);
-
-// ---------- Altri bottoni (stub) ----------
-d("quizBtn").addEventListener("click", () => log("Quiz: in arrivo 😉"));
-d("logoutBtn").addEventListener("click", () => {
-  localStorage.removeItem("ec_auth");
-  location.href = "/";
 });
 
-// ---------- Avvio ----------
-log("Pronto.");
+// ---- Ricarica lista materiali
+btnReload?.addEventListener('click', async () => {
+  try {
+    listEl.innerHTML = 'Carico...';
+    const data = await GET(`/materials?user_id=${encodeURIComponent(readUID())}`);
+    if (!data || data.length === 0) {
+      listEl.innerHTML = '<em>Nessun materiale.</em>';
+      return;
+    }
+    listEl.innerHTML = data.map(m =>
+      `<div class="mat">
+        <div class="mat__title">${m.title}</div>
+        <div class="mat__meta">#${m.id} • ${m.type}</div>
+      </div>`).join('');
+    log('Materiali ricaricati.');
+  } catch (err) {
+    listEl.innerHTML = '<em>Errore.</em>';
+    log(`Errore ricarica → ${err.message || err}`);
+  }
+});
+
+// ---- Ripasso di oggi
+btnDue?.addEventListener('click', async () => {
+  try {
+    dueEl.innerHTML = 'Carico...';
+    const data = await GET(`/repetition/today?user_id=${encodeURIComponent(readUID())}`);
+    if (!data || data.length === 0) {
+      dueEl.innerHTML = '<em>Nessuna card dovuta al momento.</em>';
+      return;
+    }
+    dueEl.innerHTML = data.map(x => `<div class="due">• ${x.title}</div>`).join('');
+  } catch (err) {
+    dueEl.innerHTML = '<em>Errore.</em>';
+    log(`Errore ripasso → ${err.message || err}`);
+  }
+});
