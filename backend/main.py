@@ -51,3 +51,6 @@ def me(user=Depends(current_user)):
 
 # routers
 app.include_router(materials.router)
+app.include_router(ai_tools.router)      
+app.include_router(repetition.router)    
+app.include_router(upload.router)        
