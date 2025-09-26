@@ -2,8 +2,10 @@
 <html lang="it">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <title>Eccomi Edu — Accesso</title>
+  <!-- carico CSS anche via link (fail-safe) -->
+  <link rel="stylesheet" href="./styles.css">
 </head>
 <body>
   <div class="login-wrap">
@@ -19,14 +21,13 @@
       <label>Password</label>
       <input type="password" name="password" placeholder="••••••••" autocomplete="current-password" required />
 
-      <button type="submit" class="btn">Entra</button>
+      <button type="submit" class="btn primary wide">Entra</button>
       <p id="err" class="err hidden"></p>
     </form>
 
     <footer>© <span id="year"></span> Eccomi Edu • Private Beta</footer>
   </div>
 
-  <!-- 🔧 forzo URL backend -->
   <script>
     window.VITE_API_BASE_URL = "https://eccomi-edu-backend.onrender.com";
   </script>
