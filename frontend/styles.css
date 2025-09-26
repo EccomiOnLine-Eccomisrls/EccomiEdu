@@ -1,67 +1,49 @@
-body {
-  font-family: system-ui, sans-serif;
-  background: var(--bg);
-  margin: 0;
-  color: var(--text);
-  line-height: 1.5;
+:root{
+  --primary:#2563eb; --primary-600:#1d4ed8;
+  --bg:#f3f4f6; --text:#111827;
+  --card:#fff; --border:#e5e7eb;
 }
 
-/* wrapper più compatto */
-.admin-wrap {
-  max-width: 900px;
-  margin: 0 auto;
-  padding: 1rem;
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;min-height:100%}
+body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,"Helvetica Neue",Arial;
+     color:var(--text); background:var(--bg); line-height:1.5}
+
+.login-wrap,.admin-wrap{max-width:940px;margin:0 auto;padding:24px}
+.header{display:flex;justify-content:space-between;align-items:center;gap:12px}
+h1{margin:0 0 8px 0;font-size:24px}
+h1 small{display:block;font-weight:500;color:#6b7280;font-size:14px}
+h2{margin:0 0 12px 0;font-size:18px}
+.subtitle{color:#6b7280}
+
+.card{background:var(--card);border:1px solid var(--border);border-radius:10px;
+      padding:18px 20px;margin:16px 0;box-shadow:0 1px 2px rgba(0,0,0,.04)}
+
+.card-head{display:flex;justify-content:space-between;align-items:center;gap:12px}
+
+input,select,textarea,button{
+  width:100%;margin:8px 0; padding:10px 12px; font-size:16px;
+  border:1px solid var(--border); border-radius:8px; background:#fff;
 }
 
-/* Card più compatte e con ombra */
-.card {
-  background: var(--card-bg);
-  padding: 1.2rem 1.5rem;
-  margin: 1.2rem 0;
-  border: 1px solid var(--border);
-  border-radius: 0.6rem;
-  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
-}
+textarea{min-height:120px;resize:vertical}
 
-/* Input e textarea */
-input, select, textarea {
-  width: 100%;
-  margin: 0.5rem 0;
-  padding: 0.6rem 0.8rem;
-  font-size: 1rem;
-  border: 1px solid var(--border);
-  border-radius: 0.4rem;
-  background: #fff;
-}
+.btn{background:#e5e7eb;border:1px solid var(--border);cursor:pointer;font-weight:600}
+.btn:hover{filter:brightness(.98)}
+.btn.primary{background:var(--primary);color:#fff;border-color:var(--primary)}
+.btn.primary:hover{background:var(--primary-600)}
+.btn.ghost{background:transparent;border-color:var(--border)}
+.btn.wide{width:100%}
 
-/* Pulsanti */
-.btn {
-  background: var(--primary);
-  color: white;
-  border: none;
-  cursor: pointer;
-  border-radius: 0.4rem;
-  padding: 0.6rem 1.2rem;
-  font-size: 1rem;
-  font-weight: 500;
-  transition: background 0.2s;
-}
-.btn:hover {
-  background: #1d4ed8;
-}
+.list{margin:0;padding-left:18px}
+.list li{margin:6px 0}
 
-/* Pulsanti secondari piccoli */
-.btn.small, .card button.btn {
-  display: inline-block;
-  width: auto;
-  min-width: 120px;
-}
+.err{color:#dc2626;margin-top:8px}
+.hidden{display:none}
 
-/* Lista materiali */
-#materials {
-  margin-top: 0.8rem;
-  padding-left: 1.2rem;
-}
-#materials li {
-  margin: 0.3rem 0;
+.api-base-input{font-family:ui-monospace,Menlo,Consolas,monospace;white-space:nowrap;overflow:auto}
+
+@media (max-width:640px){
+  .login-wrap,.admin-wrap{padding:16px}
+  input,select,textarea,button{font-size:16px}
 }
