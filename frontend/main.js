@@ -1,7 +1,6 @@
 import './styles.css'; // se usi Vite; in HTML puro viene ignorato
 
-const API_BASE =
-  (window.VITE_API_BASE_URL) || "https://eccomi-edu-backend.onrender.com";
+const API_BASE = "https://eccomi-edu-backend.onrender.com";
 
 document.querySelector('#year').textContent = new Date().getFullYear();
 
