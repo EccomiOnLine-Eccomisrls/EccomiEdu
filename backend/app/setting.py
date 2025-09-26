@@ -1,13 +1,18 @@
-from pydantic import BaseModel
 import os
+from functools import lru_cache
+from pydantic import BaseModel
 
 class Settings(BaseModel):
-    PROJECT_NAME: str = "Eccomi Edu"
-    JWT_SECRET: str = os.getenv("JWT_SECRET", "change-me-please")
+    ADMIN_EMAIL: str = "admin@eccomi.edu"
+    ADMIN_PASSWORD_PLAIN: str = "changeme"
+    JWT_SECRET: str = "devsecret"
     JWT_ALGO: str = "HS256"
-    # admin seed (MVP): cambia appena possibile
-    ADMIN_EMAIL: str = os.getenv("ADMIN_EMAIL", "admin@eccomi.edu")
-    ADMIN_PASSWORD_PLAIN: str = os.getenv("ADMIN_PASSWORD_PLAIN", "EccomiAdmin!2025")
 
+@lru_cache
 def get_settings() -> Settings:
-    return Settings()
+    return Settings(
+        ADMIN_EMAIL=os.getenv("ADMIN_EMAIL", "admin@eccomi.edu"),
+        ADMIN_PASSWORD_PLAIN=os.getenv("ADMIN_PASSWORD_PLAIN", "changeme"),
+        JWT_SECRET=os.getenv("JWT_SECRET", "devsecret"),
+        JWT_ALGO=os.getenv("JWT_ALGO", "HS256"),
+    )
